@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pbix-model-extractor"
+version = "0.1.0"
+description = "Tool for extracting Power Query (M) content from PBIX files"
+authors = [{name = "Your Name"}]
+dependencies = [
+    "pbixray>=0.1.0",
+    "pytest>=7.0.0",
+    "ruff>=0.1.0"
+]
+requires-python = ">=3.11"
+
+[project.scripts]
+pbix-model-extractor = "src.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]

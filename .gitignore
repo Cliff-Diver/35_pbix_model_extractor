@@ -1,0 +1,67 @@
+# .gitignore — věci, které nechceme nahrávat na GitHub
+# Virtuální prostředí
+venv/
+.venv/
+ENV/
+env/
+
+# Data input / output (ne nahrávat obsah složek)
+0_INPUT/
+1_OUTPUT/
+
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Packaging
+*.egg
+*.whl
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln
+
+# Tests / coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Type checkers / caches
+.mypy_cache/
+.pyre/
+.pytype/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs, temp files, secrets
+*.log
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# egg-info in src
+src/*/*.egg-info/
+
+# Pokud chcete ponechat prázdné složky, vytvořte v nich .gitkeep
