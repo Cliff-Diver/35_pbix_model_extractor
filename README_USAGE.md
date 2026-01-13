@@ -8,6 +8,9 @@ Nástroj pro extrakci Power Query (M) obsahu z PBIX souborů.
 pip install -e .
 ```
 
+Install dependencies: `pip install -r requirements.txt`
+Alternativně: závislosti jsou definovány v `pyproject.toml`.
+
 ## Použití
 
 ```bash
