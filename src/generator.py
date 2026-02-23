@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
 import re
 from pathlib import Path
-from src.dependency import detect_dependencies_regex
+from .dependency import detect_dependencies_regex
 
 
 def parse_m_steps(m_code: str) -> List[str]:

@@ -18,6 +18,10 @@ class PBIXExtractor:
     def extract_nodes(self) -> List[Dict[str, Any]]:
         nodes = []
 
+        # Get list of loaded tables (Load = enabled)
+        # model.tables contains only tables that are loaded into the data model
+        loaded_tables = set(self.model.tables) if hasattr(self.model, 'tables') else set()
+
         # Extract queries and functions from power_query
         power_query_df = self.model.power_query
         for _, row in power_query_df.iterrows():
@@ -26,8 +30,12 @@ class PBIXExtractor:
             # Heuristic: if expression starts with (params) => it's a function, else query
             if expression.strip().startswith("(") and "=>" in expression:
                 kind = "function"
+                # Functions don't have a Load property
+                load_enabled = None
             else:
                 kind = "query"
+                # Check if this query is loaded into the model
+                load_enabled = name in loaded_tables
             # Deterministic id based on PBIX namespace, kind and name
             sanitized = name.replace(' ', '_').lower()
             uid = uuid.uuid5(self._pbix_ns, f"{kind}:{name}")
@@ -36,8 +44,8 @@ class PBIXExtractor:
                 "name": name,
                 "kind": kind,
                 "m_code": expression,
-                "group": None,  # TODO: extract from metadata if available
-                "load_enabled": None,  # TODO: extract if available
+                "group": None,  # TODO: extract from TOM metadata (requires Microsoft.AnalysisServices.Tabular)
+                "load_enabled": load_enabled,
             }
             nodes.append(node)
 
@@ -52,8 +60,8 @@ class PBIXExtractor:
                 "name": name,
                 "kind": "parameter",
                 "m_code": row["Expression"],
-                "group": None,
-                "load_enabled": None,
+                "group": None,  # TODO: extract from TOM metadata
+                "load_enabled": None,  # Parameters don't have a Load property
             }
             nodes.append(node)
 
