@@ -1,0 +1,20 @@
+<article class="query-card" data-query-id="{{ query.id }}">
+    <header>
+        <label>
+            <input type="checkbox" class="query-checkbox" value="{{ query.id }}" checked>
+            <strong>{{ query.name }}</strong>
+        </label>
+        <div class="query-meta">
+            <span class="badge badge-{{ query.kind }}">{{ query.kind }}</span>
+            {% if query.load_enabled is not none %}
+                <span class="badge badge-load-{{ query.load_enabled|lower }}">
+                    Load: {{ query.load_enabled }}
+                </span>
+            {% endif %}
+        </div>
+    </header>
+    <details>
+        <summary>Zobrazit M kód</summary>
+        <pre class="m-code"><code>{{ query.m_code }}</code></pre>
+    </details>
+</article>

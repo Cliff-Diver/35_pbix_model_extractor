@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Upload – PBIX Model Extractor{% endblock %}
+
+{% block content %}
+<div class="upload-card">
+    <hgroup style="text-align:center; margin-bottom:1.5rem;">
+        <h1 style="font-size:1.5rem; margin-bottom:0.25rem;">Nahrát PBIX soubor</h1>
+        <p style="color:#6b7280; margin:0; font-size:0.9rem;">Extrahujte Power Query dotazy z Power BI souboru</p>
+    </hgroup>
+
+    <form id="upload-form" enctype="multipart/form-data">
+        <div id="drop-zone" class="drop-zone">
+            <span class="drop-icon">📂</span>
+            <p style="margin:0.25rem 0 0.6rem; font-weight:600;">Přetáhněte .pbix soubor sem</p>
+            <p style="margin:0 0 0.75rem; font-size:0.85rem; color:#9ca3af;">nebo</p>
+            <label class="drop-zone-label" for="pbix-file">Vybrat soubor</label>
+            <input type="file" id="pbix-file" name="file" accept=".pbix" required>
+        </div>
+
+        <div id="file-info" class="file-info" style="display:none;">
+            <span class="file-info-icon">✅</span>
+            <span id="file-name"></span>
+        </div>
+
+        <div id="upload-error" class="error-message" style="display:none;"></div>
+
+        <button type="submit" id="upload-btn" style="width:100%; margin-top:0.25rem;">
+            <span id="upload-text">Nahrát a extrahovat dotazy</span>
+        </button>
+    </form>
+</div>
+{% endblock %}

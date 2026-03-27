@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}{{ filename }} – Dotazy{% endblock %}
+
+{% block nav_extra %}
+    <a href="/queries/{{ session_id }}">Dotazy</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Sticky akční bar -->
+<div class="action-bar">
+    <div class="action-bar-inner">
+        <span class="selection-info" id="selection-info">
+            Vybráno: <strong id="selected-count">{{ queries|length }}</strong> / {{ queries|length }}
+        </span>
+        <button type="button" id="select-all-btn" class="btn-sm outline secondary" style="padding:0.28rem 0.7rem; font-size:0.8rem;">Vybrat vše</button>
+        <button type="button" id="deselect-all-btn" class="btn-sm outline secondary" style="padding:0.28rem 0.7rem; font-size:0.8rem;">Zrušit výběr</button>
+        <div class="spacer"></div>
+        <button type="button" id="analyze-btn" style="padding:0.38rem 1.1rem; font-size:0.88rem;" aria-busy="false">
+            Analyzovat vybrané
+        </button>
+    </div>
+</div>
+
+<!-- Formulář pro analýzu (skrytý, odesílá se přes JS) -->
+<form id="analyze-form" enctype="multipart/form-data" style="display:none;">
+    <input type="hidden" name="session_id" value="{{ session_id }}">
+    <input type="hidden" name="query_ids" id="selected-query-ids" value="">
+</form>
+
+<!-- Instrukce – skládací panel -->
+<details class="instructions-panel">
+    <summary>Instrukce pro model</summary>
+    <div class="instructions-panel-body">
+        <div style="margin-bottom:1rem;">
+            <label for="instruction-files">Nahrát markdown soubory s instrukcemi (.md):</label>
+            <input type="file" id="instruction-files" accept=".md,.markdown,.txt" multiple style="margin-top:0.3rem;">
+            <div id="uploaded-files-list" class="uploaded-files-list"></div>
+        </div>
+        <div>
+            <label for="instructions-text">Nebo zadat instrukce přímo:</label>
+            <textarea id="instructions-text" rows="4" style="width:100%; margin-top:0.3rem; font-size:0.88rem;"
+                      placeholder="Např.: Optimalizuj Power Query dotazy. Přidej komentář ke každému kroku..."></textarea>
+        </div>
+    </div>
+</details>
+
+<div id="analyze-error" class="error-message" style="display:none;"></div>
+
+<!-- Souhrnný řádek se statistikami -->
+<p style="font-size:0.85rem; color:#6b7280; margin-bottom:0.75rem;">
+    Soubor: <strong>{{ filename }}</strong> &nbsp;|&nbsp;
+    Celkem: <strong>{{ queries|length }}</strong> záznamu
+    &nbsp;|&nbsp;
+    {% set q_count = queries|selectattr("kind","equalto","query")|list|length %}
+    {% set f_count = queries|selectattr("kind","equalto","function")|list|length %}
+    {% set p_count = queries|selectattr("kind","equalto","parameter")|list|length %}
+    <span class="badge badge-query">{{ q_count }} dotazů</span>
+    <span class="badge badge-function">{{ f_count }} funkcí</span>
+    <span class="badge badge-parameter">{{ p_count }} parametrů</span>
+</p>
+
+<!-- Seznam dotazů -->
+<div id="query-list">
+    {% for query in queries %}
+    <div class="query-card" data-query-id="{{ query.id }}">
+        <div class="query-card-header">
+            <input type="checkbox" class="query-checkbox" value="{{ query.id }}" checked>
+            <span class="query-card-name" title="{{ query.name }}">{{ query.name }}</span>
+            <div class="query-card-meta">
+                <span class="badge badge-{{ query.kind }}">{{ query.kind }}</span>
+                {% if query.load_enabled is not none %}
+                    <span class="badge badge-load-{{ query.load_enabled|lower }}">
+                        {% if query.load_enabled %}načítán{% else %}nenačítán{% endif %}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+        <details>
+            <summary>M kód &nbsp;<span style="font-size:0.75rem; color:#9ca3af;">{{ query.m_code|wordcount }} slov</span></summary>
+            <pre class="m-code">{{ query.m_code }}</pre>
+        </details>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+// Aktualizace počítadla vybraných dotazů
+function updateSelectionCount() {
+    const total = document.querySelectorAll('.query-checkbox').length;
+    const selected = document.querySelectorAll('.query-checkbox:checked').length;
+    document.getElementById('selected-count').textContent = selected;
+    document.getElementById('analyze-btn').disabled = selected === 0;
+}
+document.querySelectorAll('.query-checkbox').forEach(cb => {
+    cb.addEventListener('change', updateSelectionCount);
+});
+updateSelectionCount();
+</script>
+{% endblock %}

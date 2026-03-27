@@ -1,0 +1,705 @@
+/* ============================================
+   PBIX Model Extractor – Custom Styles
+   ============================================ */
+
+/* --- Globální proměnné a layout --- */
+
+:root {
+    --app-max-width: 960px;
+    --code-font: 'Consolas', 'Menlo', 'Monaco', 'Courier New', monospace;
+    --diff-font-size: 13px;
+    --diff-line-height: 1.45;
+
+    /* Diff barvy – VS Code styl */
+    --diff-added-bg:     #e6ffec;
+    --diff-added-num-bg: #ccffd8;
+    --diff-added-inline-bg: #b7f0c2;
+    --diff-added-text:   #1a4731;
+    --diff-removed-bg:   #ffebe9;
+    --diff-removed-num-bg: #ffd7d5;
+    --diff-removed-inline-bg: #ffc1bc;
+    --diff-removed-text: #82071e;
+    --diff-hunk-bg:      #eef2ff;
+    --diff-hunk-text:    #3730a3;
+    --diff-num-bg:       #f6f8fa;
+    --diff-num-text:     #8b949e;
+    --diff-border:       #d1d9e0;
+    --diff-max-height:   min(72vh, 900px);
+}
+
+body.page-diff {
+    --page-max-width: min(calc(100vw - 2rem), 1800px);
+}
+
+body.page-diff:not(.diff-layout-wide) {
+    --page-max-width: 960px;
+}
+
+/* Omezení šířky pro celý obsah – zabrání roztahování na Wide monitors */
+body > header .container,
+body > main.container,
+body > footer.container {
+    max-width: var(--app-max-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ============================================
+   Upload stránka
+   ============================================ */
+
+.upload-card {
+    max-width: 540px;
+    margin: 2rem auto;
+}
+
+.drop-zone {
+    border: 2px dashed var(--pico-muted-border-color);
+    border-radius: 10px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    background: #fafafa;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+    border-color: var(--pico-primary);
+    background: #f0f5ff;
+}
+
+.drop-zone .drop-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* Skryjeme nativní file input, nahradíme hezčím tlačítkem */
+.drop-zone input[type="file"] {
+    display: none;
+}
+
+.drop-zone-label {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.45rem 1.2rem;
+    border: 1px solid var(--pico-primary);
+    border-radius: 4px;
+    color: var(--pico-primary);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.15s;
+}
+
+.drop-zone-label:hover {
+    background: var(--pico-primary);
+    color: #fff;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #166534;
+    margin-bottom: 1rem;
+}
+
+.file-info-icon {
+    font-size: 1.1rem;
+}
+
+/* ============================================
+   Badges
+   ============================================ */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15em 0.55em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 12px;
+    background: #e5e7eb;
+    color: #374151;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.badge-query     { background: #dbeafe; color: #1d4ed8; }
+.badge-function  { background: #ede9fe; color: #6d28d9; }
+.badge-parameter { background: #fef3c7; color: #92400e; }
+.badge-load-true    { background: #dcfce7; color: #166534; }
+.badge-load-false   { background: #f3f4f6; color: #6b7280; }
+.badge-changed   { background: #fef3c7; color: #92400e; }
+.badge-unchanged { background: #dcfce7; color: #166534; }
+
+/* ============================================
+   Queries stránka
+   ============================================ */
+
+/* Hlavní akční panel nahoře */
+.action-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--pico-background-color, #fff);
+    border-bottom: 1px solid var(--pico-muted-border-color);
+    padding: 0.75rem 0;
+    margin-bottom: 1rem;
+}
+
+.action-bar-inner {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-width: var(--app-max-width);
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.action-bar .selection-info {
+    font-size: 0.85rem;
+    color: var(--pico-muted-color);
+    min-width: 6rem;
+}
+
+.action-bar .spacer {
+    flex: 1;
+}
+
+/* Instrukce – collapsible panel */
+.instructions-panel {
+    background: #f8fafc;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+}
+
+.instructions-panel summary {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    user-select: none;
+}
+
+.instructions-panel summary::before {
+    content: '▶';
+    font-size: 0.65rem;
+    transition: transform 0.15s;
+    color: var(--pico-muted-color);
+}
+
+.instructions-panel[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.instructions-panel-body {
+    padding: 1rem;
+    border-top: 1px solid var(--pico-muted-border-color);
+}
+
+.instructions-panel label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.uploaded-files-list {
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: #166534;
+}
+
+.uploaded-files-list ul {
+    margin: 0.25rem 0 0;
+    padding-left: 1.2rem;
+}
+
+/* Query karta */
+.query-card {
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    background: #fff;
+    overflow: hidden;
+    transition: border-color 0.15s;
+}
+
+.query-card:has(.query-checkbox:checked) {
+    border-color: var(--pico-primary);
+}
+
+.query-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    cursor: pointer;
+}
+
+.query-card-header input[type="checkbox"] {
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.query-card-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.query-card-meta {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.query-card details {
+    border-top: 1px solid var(--pico-muted-border-color);
+}
+
+.query-card details summary {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+    color: var(--pico-muted-color);
+    cursor: pointer;
+    user-select: none;
+    background: #fafafa;
+}
+
+.m-code {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 0.75rem 1rem;
+    overflow-x: auto;
+    font-size: var(--diff-font-size);
+    font-family: var(--code-font);
+    line-height: var(--diff-line-height);
+    max-height: 320px;
+    overflow-y: auto;
+    white-space: pre;
+    border-radius: 0;
+    margin: 0;
+}
+
+/* ============================================
+   Chybové hlášení a spinner
+   ============================================ */
+
+.error-message {
+    padding: 0.75rem 1rem;
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin: 0.75rem 0;
+}
+
+.spinner-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+}
+
+/* Pico spinner  */
+button[aria-busy="true"] {
+    pointer-events: none;
+}
+
+/* ============================================
+   Diff stránka
+   ============================================ */
+
+/* Sticky přepínač módu */
+.diff-toolbar {
+    position: sticky;
+    top: 4rem;
+    z-index: 50;
+    background: var(--pico-background-color, #fff);
+    border-bottom: 1px solid var(--pico-muted-border-color);
+    padding: 0.6rem 0;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.diff-toolbar h1 {
+    font-size: 1rem;
+    margin: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.diff-toolbar-controls,
+.diff-view-options {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.diff-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.55rem;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 6px;
+    background: #fff;
+    font-size: 0.82rem;
+    color: #475569;
+}
+
+.diff-option input[type="checkbox"] {
+    margin: 0;
+}
+
+.diff-option-font {
+    gap: 0.65rem;
+}
+
+.diff-option-font input[type="range"] {
+    width: 7rem;
+    margin: 0;
+}
+
+.diff-option-font output {
+    min-width: 3.75rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: #0f172a;
+}
+
+.diff-toolbar-back {
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.mode-toggle {
+    display: flex;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.mode-toggle-btn {
+    padding: 0.3rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    background: #fff;
+    color: var(--pico-muted-color);
+    border: none;
+    cursor: pointer;
+    border-right: 1px solid var(--pico-muted-border-color);
+    transition: background 0.1s, color 0.1s;
+}
+
+.mode-toggle-btn:last-child {
+    border-right: none;
+}
+
+.mode-toggle-btn.active {
+    background: var(--pico-primary);
+    color: #fff;
+}
+
+.mode-toggle-btn:not(.active):hover {
+    background: #f1f5f9;
+}
+
+/* Karta výsledku jednoho dotazu */
+.diff-result-card {
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+    background: #fff;
+}
+
+.diff-result-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.diff-result-card-header h2 {
+    margin: 0;
+    font-size: 0.95rem;
+    flex: 1;
+    font-family: var(--code-font);
+}
+
+/* ============================================
+   Diff – Unified
+   ============================================ */
+
+.diff-container {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-width: 100%;
+    max-height: var(--diff-max-height);
+    border-top: none;
+    scrollbar-gutter: stable both-edges;
+}
+
+.diff-container.unified {
+    background: #fff;
+}
+
+.no-changes {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--pico-muted-color);
+    font-size: 0.9rem;
+}
+
+/* Wrapper pre pro unified diff */
+.diff-content {
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: max-content;
+    min-width: 100%;
+    font-family: var(--code-font);
+    font-size: var(--diff-font-size);
+    line-height: var(--diff-line-height);
+}
+
+.diff-line {
+    display: block;
+    padding: 0 0.75rem;
+    white-space: pre;           /* Nerozbíjí kód – horizontální scroll */
+    width: max-content;
+    min-width: 100%;
+}
+
+.diff-header { background: #fff;   color: #57606a; font-size: 0.78rem; padding: 4px 0.75rem; }
+.diff-hunk   { background: var(--diff-hunk-bg);  color: var(--diff-hunk-text); }
+.diff-added  { background: var(--diff-added-bg);  color: var(--diff-added-text);   }
+.diff-removed{ background: var(--diff-removed-bg);color: var(--diff-removed-text); }
+.diff-context{ background: #fff;   color: #24292f; }
+
+/* Marker pro + / − ve unified diffu a v side-by-side buňkách */
+.diff-sign {
+    display: inline-block;
+    width: 1.2em;
+    text-align: center;
+    font-weight: 700;
+    opacity: 0.7;
+    user-select: none;
+}
+
+/* ============================================
+   Diff – Side-by-Side
+   ============================================ */
+
+.diff-container.side-by-side {
+    overflow-x: auto;
+    background: #fff;
+}
+
+.diff-table {
+    border-collapse: collapse;
+    font-family: var(--code-font);
+    font-size: var(--diff-font-size);
+    line-height: var(--diff-line-height);
+    width: max-content;
+    min-width: 100%;
+    table-layout: auto;
+}
+
+.diff-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    text-align: left;
+    padding: 0.35rem 0.6rem 0.35rem 2.5rem;
+    background: #f6f8fa;
+    border-bottom: 1px solid var(--diff-border);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #57606a;
+    white-space: nowrap;
+}
+
+.diff-table td {
+    padding: 0;
+    vertical-align: top;
+    border: none;
+}
+
+/* Číslo řádku */
+.diff-table .line-no {
+    width: 48px;
+    min-width: 48px;
+    text-align: right;
+    padding: 0 8px;
+    background: var(--diff-num-bg);
+    color: var(--diff-num-text);
+    font-size: calc(var(--diff-font-size) * 0.9);
+    user-select: none;
+    border-right: 1px solid var(--diff-border);
+    white-space: nowrap;
+}
+
+/* Kód buňka */
+.diff-table .diff-left,
+.diff-table .diff-right {
+    min-width: 420px;
+    max-width: none;
+}
+
+.diff-table td pre {
+    margin: 0;
+    padding: 0 0.75rem;
+    white-space: pre;
+    background: transparent;
+    font-family: var(--code-font);
+    font-size: var(--diff-font-size);
+    line-height: var(--diff-line-height);
+    border-radius: 0;
+    overflow: visible;
+    width: max-content;
+    min-width: 100%;
+    min-height: calc(var(--diff-font-size) * var(--diff-line-height));
+}
+
+/* Oddělovač středový */
+.diff-table .diff-left ~ .line-no {
+    border-left: 2px solid var(--diff-border);
+}
+
+/* Barvy řádků */
+.diff-row-equal .diff-left,
+.diff-row-equal .diff-right {
+    background: #fff;
+    color: #24292f;
+}
+
+.diff-row-equal .line-no {
+    background: var(--diff-num-bg);
+    color: var(--diff-num-text);
+}
+
+/* Přidáno */
+.diff-row-added .diff-right { background: var(--diff-added-bg);     color: var(--diff-added-text); }
+.diff-row-added .line-no:last-of-type { background: var(--diff-added-num-bg); color: var(--diff-added-text); }
+/* Prázdná levá buňka při přidaném řádku */
+.diff-row-added .diff-left  { background: #f8fafc; }
+
+/* Odebráno */
+.diff-row-removed .diff-left  { background: var(--diff-removed-bg);   color: var(--diff-removed-text); }
+.diff-row-removed .line-no:first-of-type { background: var(--diff-removed-num-bg); color: var(--diff-removed-text); }
+/* Prázdná pravá buňka při odebraném řádku */
+.diff-row-removed .diff-right { background: #f8fafc; }
+
+/* Změněno */
+.diff-row-modified .diff-left  { background: var(--diff-removed-bg);  color: var(--diff-removed-text); }
+.diff-row-modified .diff-right { background: var(--diff-added-bg);    color: var(--diff-added-text); }
+
+.diff-inline-added,
+.diff-inline-removed {
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0 0.1rem;
+}
+
+.diff-inline-added {
+    background: var(--diff-added-inline-bg);
+}
+
+.diff-inline-removed {
+    background: var(--diff-removed-inline-bg);
+}
+
+.diff-row-blank,
+.diff-line-blank {
+    opacity: 0.7;
+}
+
+.diff-page[data-show-empty-lines="false"] .diff-row-blank,
+.diff-page[data-show-empty-lines="false"] .diff-line-blank {
+    display: none;
+}
+
+/* Rozbalovací panel pro celý nový kód */
+.diff-result-card details {
+    border-top: 1px solid var(--pico-muted-border-color);
+}
+
+.diff-result-card details summary {
+    padding: 0.4rem 1rem;
+    background: #fafafa;
+    font-size: 0.82rem;
+    color: var(--pico-muted-color);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ============================================
+   Tlačítka + akce
+   ============================================ */
+
+.btn-sm {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.82rem;
+}
+
+/* ============================================
+   Responzivita
+   ============================================ */
+
+@media (max-width: 640px) {
+    .diff-toolbar {
+        top: 3.5rem;
+    }
+
+    .diff-table .diff-left,
+    .diff-table .diff-right {
+        min-width: 200px;
+    }
+
+    .diff-toolbar-controls,
+    .diff-view-options {
+        width: 100%;
+        align-items: flex-start;
+    }
+
+    .diff-option-font {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .action-bar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

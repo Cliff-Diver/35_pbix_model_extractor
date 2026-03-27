@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Výsledky – {{ filename }}{% endblock %}
+{% block body_class %}page-diff diff-layout-wide{% endblock %}
+
+{% block nav_extra %}
+    <a href="/queries/{{ session_id }}">Dotazy</a>
+    <a href="/diff/{{ session_id }}">Diff</a>
+{% endblock %}
+
+{% block content %}
+<div class="diff-page" data-diff-page data-show-empty-lines="false">
+
+<!-- Sticky toolbar s přepínačem režimu -->
+<div class="diff-toolbar">
+    <h1>{{ filename }}</h1>
+    {% if results %}
+    <div class="diff-toolbar-controls">
+        <div class="mode-toggle" id="mode-toggle">
+            <button class="mode-toggle-btn active" data-mode="side-by-side" title="Původní kód vlevo, nový vpravo">Vedle sebe</button>
+            <button class="mode-toggle-btn" data-mode="unified" title="Unified diff ve stylu git">Unified</button>
+        </div>
+        <div class="diff-view-options">
+            <label class="diff-option diff-option-checkbox">
+                <input type="checkbox" id="diff-wide-layout" checked>
+                <span>Široké zobrazení</span>
+            </label>
+            <label class="diff-option diff-option-checkbox">
+                <input type="checkbox" id="diff-show-empty-lines">
+                <span>Zobrazit prázdné řádky</span>
+            </label>
+            <label class="diff-option diff-option-font" for="diff-font-size">
+                <span>Písmo</span>
+                <input type="range" id="diff-font-size" min="11" max="18" step="1" value="13">
+                <output id="diff-font-size-value" for="diff-font-size">13 px</output>
+            </label>
+        </div>
+    </div>
+    {% endif %}
+    <a href="/queries/{{ session_id }}" class="diff-toolbar-back">← Zpět na dotazy</a>
+</div>
+
+{% if not results %}
+<div style="text-align:center; padding:3rem 1rem; color:#6b7280;">
+    <p style="font-size:1.1rem;">Zatím žádné výsledky analýzy.</p>
+    <a href="/queries/{{ session_id }}">→ Odeslat dotazy k analýze</a>
+</div>
+{% else %}
+
+<!-- Souhrn -->
+<p style="font-size:0.85rem; color:#6b7280; margin-bottom:1rem;">
+    Analyzováno dotazů: <strong>{{ results|length }}</strong> &nbsp;|&nbsp;
+    Změněno: <strong>{{ results|selectattr("has_changes")|list|length }}</strong> &nbsp;|&nbsp;
+    Bez změn: <strong>{{ results|rejectattr("has_changes")|list|length }}</strong>
+</p>
+
+<!-- Výsledky pro jednotlivé dotazy -->
+{% for result in results %}
+<div class="diff-result-card">
+    <div class="diff-result-card-header">
+        <h2>{{ result.query_name }}</h2>
+        {% if result.has_changes %}
+            <span class="badge badge-changed">Změněno</span>
+        {% else %}
+            <span class="badge badge-unchanged">Beze změn</span>
+        {% endif %}
+    </div>
+
+    <!-- Side-by-side (výchozí) -->
+    <div class="diff-view diff-side-by-side" data-mode="side-by-side">
+        {{ result.diff_html_side_by_side | safe }}
+    </div>
+
+    <!-- Unified -->
+    <div class="diff-view diff-unified" data-mode="unified" style="display:none;">
+        {{ result.diff_html_unified | safe }}
+    </div>
+
+    {% if result.has_changes %}
+    <details class="diff-result-card-details">
+        <summary>Zobrazit celý nový kód</summary>
+        <pre class="m-code" style="border-radius:0;">{{ result.modified_code }}</pre>
+    </details>
+    {% endif %}
+</div>
+{% endfor %}
+
+{% endif %}
+</div>
+{% endblock %}
